@@ -19,9 +19,9 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="scss" scoped>
-$baseFontSize: 192;
+$baseNum: 192;
 @function px2rem($px){
-  @return $px / $baseFontSize * 1rem;
+  @return $px / $baseNum * 1rem;
 }
 
 .hello-view {

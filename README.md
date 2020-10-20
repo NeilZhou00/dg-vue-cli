@@ -20,9 +20,12 @@ npm run build
 npm run build:server
 ```
 
-### Lints and fixes files
+### vue 文件内编写SASS样式式，必须使用px2rem 方法，实现响应式布局
 ```
-npm run lint
+$baseNum: 192;
+@function px2rem($px){
+  @return $px / $baseNum * 1rem;
+}
 ```
 
 ### Customize configuration
