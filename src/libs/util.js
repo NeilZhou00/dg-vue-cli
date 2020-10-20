@@ -144,7 +144,6 @@ export const formatJson = (obj) => {
 
 /*
  * 返回IE版本，默认返回版本号为 11
- *
 */
 export const getIEVersion = () => {
   let userAgent = navigator.userAgent
@@ -157,3 +156,38 @@ export const getIEVersion = () => {
     return 11
   }
 }
+
+/**
+ * @param any data 校验的数据
+ *        'String' 数据类型
+ * @description 判断传入数据是否与数据类型一致
+ */
+export const judgeDataTypeHandler = (data, dataType) => {
+  return Object.prototype.toString.call(data) === `[object ${('' + dataType).toLowerCase().replace(/^[a-z]/g, (w) => {return w.toUpperCase()})}]`
+}
+
+/**
+ * @param [Array] selectList 本地数据 -- select样式数据
+ *        {Object} selectData 后端数据，options内容
+ * @description 整合select数据，返回selectUI可用数据
+ */
+export const modifySelectDataHandler = (selectList, selectData) => {
+  if (judgeDataTypeHandler(selectList, 'array') || !selectList.length) { return [] }
+
+  let newSelectList = JSON.parse(JSON.stringify(selectList))
+  newSelectList.forEach(item => {
+    if (judgeDataTypeHandler(item, 'object') && item.key) {
+      item.children = selectData[item.key]
+    }
+  })
+  return newSelectList
+}
+
+/**
+ * @param {Object} mapMutiBarData 后端数据 --- 柱状图数据
+ *        {Object} || [Array] seriesStyle series样式，所以series 样式相同，可以直接使用Object
+ * @description 整合图表-柱状图多条数据, 返回Echarts可用数据
+ */
+export const modifyMapMutiBarDataHandler = (mapMutiBarData, seriesStyle) => {
+}
+
