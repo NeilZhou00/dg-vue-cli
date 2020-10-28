@@ -26,6 +26,10 @@ $baseNum: 192;
 @function px2rem($px){
   @return $px / $baseNum * 1rem;
 }
+
+.class {
+  width: px2rem(500);
+}
 ```
 
 ### Customize configuration

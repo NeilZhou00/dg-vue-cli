@@ -172,7 +172,9 @@ export const judgeDataTypeHandler = (data, dataType) => {
  * @description 整合select数据，返回selectUI可用数据
  */
 export const modifySelectDataHandler = (selectList, selectData) => {
-  if (judgeDataTypeHandler(selectList, 'array') || !selectList.length) { return [] }
+  if (!judgeDataTypeHandler(selectList, 'array') || !selectList.length) {
+    return []
+  }
 
   let newSelectList = JSON.parse(JSON.stringify(selectList))
   newSelectList.forEach(item => {
@@ -189,5 +191,126 @@ export const modifySelectDataHandler = (selectList, selectData) => {
  * @description 整合图表-柱状图多条数据, 返回Echarts可用数据
  */
 export const modifyMapMutiBarDataHandler = (mapMutiBarData, seriesStyle) => {
+  if (!mapMutiBarData || !judgeDataTypeHandler(mapMutiBarData, 'object')) {
+    return {}
+  }
+
+  const seriesList = mapMutiBarData.yAxis && mapMutiBarData.yAxis.map((item, index) => {
+    const itemStyle = judgeDataTypeHandler(seriesStyle, 'object') ? seriesStyle : judgeDataTypeHandler(seriesStyle, 'array') && seriesStyle[index] ? seriesStyle[index] : {}
+    return {
+      name: mapMutiBarData.legend && mapMutiBarData.legend[index] || '',
+      data: item,
+      type: 'bar',
+      ...itemStyle
+    }
+  })
+
+  return {
+    legend: mapMutiBarData.legend,
+    series: seriesList
+  }
 }
 
+/**
+ * @param {Object} mapMutiLineData 后端数据 --- 折线图数据
+ *        {Object} || [Array] seriesStyle series样式，所以series 样式相同，可以直接使用Object
+ * @description 整合图表-折线图多条数据, 返回Echarts可用数据
+ */
+export const modifyMapMutiLineDataHandler = (mapMutiLineData, seriesStyle) => {
+  if (!mapMutiLineData || !judgeDataTypeHandler(mapMutiLineData, 'object')) {
+    return {}
+  }
+
+  const seriesList = mapMutiLineData.yAxis && mapMutiLineData.yAxis.map((item, index) => {
+    const itemStyle = judgeDataTypeHandler(seriesStyle, 'object') ? seriesStyle : judgeDataTypeHandler(seriesStyle, 'array') && seriesStyle[index] ? seriesStyle[index] : {}
+    return {
+      name: mapMutiLineData.legend && mapMutiLineData.legend[index] || '',
+      data: item,
+      type: 'line',
+      ...itemStyle
+    }
+  })
+
+  return {
+    legend: mapMutiLineData.legend,
+    series: seriesList
+  }
+}
+
+/**
+ * @param {Object} mapMutiRadarData 后端数据 --- 雷达图数据
+ *        {Object} || [Array] seriesStyle series样式，所以series 样式相同，可以直接使用Object
+ * @description 整合图表-雷达图多条数据, 返回Echarts可用数据
+ */
+export const modifyMapMutiRadarDataHandler = (mapMutiRadarData, seriesStyle) => {
+  if (!mapMutiRadarData || !judgeDataTypeHandler(mapMutiRadarData, 'object')) {
+    return {}
+  }
+
+  const seriesList = mapMutiRadarData.yAxis && mapMutiRadarData.yAxis.map((item, index) => {
+    const itemStyle = judgeDataTypeHandler(seriesStyle, 'object') ? seriesStyle : judgeDataTypeHandler(seriesStyle, 'array') && seriesStyle[index] ? seriesStyle[index] : {}
+    return {
+      name: mapMutiRadarData.legend && mapMutiRadarData.legend[index] || '',
+      value: item,
+      type: 'radar',
+      ...itemStyle
+    }
+  })
+
+  const indicatorList = (mapMutiRadarData.xAxis && mapMutiRadarData.max && mapMutiRadarData.xAxis.length === mapMutiRadarData.max.length && mapMutiRadarData.xAxis.map((item, index) => {
+    return {
+      name: item[index],
+      max: mapMutiRadarData.max[index]
+    }
+  })) || []
+
+  return {
+    legend: mapMutiRadarData.legend,
+    indicator: indicatorList,
+    series: seriesList
+  }
+}
+
+/**
+ * @param {Object} mapLineBarData 后端数据 --- 折线&&柱状图数据
+ *        {Object} || [Array] seriesStyle series样式，所以series 样式相同，可以直接使用Object
+ * @description 整合图表-折线&&柱状图混合数据, 返回Echarts可用数据
+ */
+export const modifyMapLineBarDataHandler = (mapLineBarData, seriesStyle) => {
+  if (!mapLineBarData || !judgeDataTypeHandler(mapLineBarData, 'object')) {
+    return {}
+  }
+
+  const lineDataLen = mapLineBarData.yAxis && mapLineBarData.yAxis.line && mapLineBarData.yAxis.line.length || 0
+  const barDataLen = mapLineBarData.yAxis && mapLineBarData.yAxis.bar && mapLineBarData.yAxis.bar.length || 0
+  const mapLineDataList = [], mapBarDataList = []
+
+  if (lineDataLen) {
+    mapLineDataList = mapLineBarData.yAxis.line.map((item, index) => {
+      const itemStyle = judgeDataTypeHandler(seriesStyle, 'object') ? seriesStyle : judgeDataTypeHandler(seriesStyle, 'array') && seriesStyle[index + barDataLen] ? seriesStyle[index + barDataLen] : {}
+      return {
+        name: mapLineBarData.legend && mapLineBarData.legend[index + barDataLen] || '',
+        data: item,
+        type: 'line',
+        ...itemStyle
+      }
+    })
+  }
+
+  if (barDataLen) {
+    mapBarDataList = mapLineBarData.yAxis.bar.map((item, index) => {
+      const itemStyle = judgeDataTypeHandler(seriesStyle, 'object') ? seriesStyle : judgeDataTypeHandler(seriesStyle, 'array') && seriesStyle[index] ? seriesStyle[index] : {}
+      return {
+        name: mapLineBarData.legend && mapLineBarData.legend[index] || '',
+        data: item,
+        type: 'bar',
+        ...itemStyle
+      }
+    })
+  }
+
+  return {
+    legend: mapLineBarData.legend,
+    series: [].concat(mapLineDataList, mapBarDataList)
+  }
+}

@@ -1,6 +1,7 @@
 import axios from 'axios'
 import config from '@/config'
 import router from '@/router'
+import qs from 'qs'
 import { delToken } from '../libs/util'
 
 const url =
@@ -74,12 +75,7 @@ class HttpRequest {
     const instance = axios.create()
     let data = options.data
     if (options.headers) {
-      // 包含文件流
-      const formData = new FormData()
-      for (const k in data) {
-        formData.append(k, data[k])
-      }
-      data = formData
+      data = qs.stringify(data)
     }
 
     options = Object.assign(this.getInsideConfig(), options, { data })
