@@ -163,7 +163,7 @@ export const getIEVersion = () => {
  * @description 判断传入数据是否与数据类型一致
  */
 export const judgeDataTypeHandler = (data, dataType) => {
-  return Object.prototype.toString.call(data) === `[object ${('' + dataType).toLowerCase().replace(/^[a-z]/g, (w) => {return w.toUpperCase()})}]`
+  return Object.prototype.toString.call(data) === `[object ${('' + dataType).toLowerCase().replace(/^[a-z]/g, (w) => { return w.toUpperCase() })}]`
 }
 
 /**
@@ -198,7 +198,7 @@ export const modifyMapMutiBarDataHandler = (mapMutiBarData, seriesStyle) => {
   const seriesList = mapMutiBarData.yAxis && mapMutiBarData.yAxis.map((item, index) => {
     const itemStyle = judgeDataTypeHandler(seriesStyle, 'object') ? seriesStyle : judgeDataTypeHandler(seriesStyle, 'array') && seriesStyle[index] ? seriesStyle[index] : {}
     return {
-      name: mapMutiBarData.legend && mapMutiBarData.legend[index] || '',
+      name: (mapMutiBarData.legend && mapMutiBarData.legend[index]) || '',
       data: item,
       type: 'bar',
       ...itemStyle
@@ -224,7 +224,7 @@ export const modifyMapMutiLineDataHandler = (mapMutiLineData, seriesStyle) => {
   const seriesList = mapMutiLineData.yAxis && mapMutiLineData.yAxis.map((item, index) => {
     const itemStyle = judgeDataTypeHandler(seriesStyle, 'object') ? seriesStyle : judgeDataTypeHandler(seriesStyle, 'array') && seriesStyle[index] ? seriesStyle[index] : {}
     return {
-      name: mapMutiLineData.legend && mapMutiLineData.legend[index] || '',
+      name: (mapMutiLineData.legend && mapMutiLineData.legend[index]) || '',
       data: item,
       type: 'line',
       ...itemStyle
@@ -250,7 +250,7 @@ export const modifyMapMutiRadarDataHandler = (mapMutiRadarData, seriesStyle) => 
   const seriesList = mapMutiRadarData.yAxis && mapMutiRadarData.yAxis.map((item, index) => {
     const itemStyle = judgeDataTypeHandler(seriesStyle, 'object') ? seriesStyle : judgeDataTypeHandler(seriesStyle, 'array') && seriesStyle[index] ? seriesStyle[index] : {}
     return {
-      name: mapMutiRadarData.legend && mapMutiRadarData.legend[index] || '',
+      name: (mapMutiRadarData.legend && mapMutiRadarData.legend[index]) || '',
       value: item,
       type: 'radar',
       ...itemStyle
@@ -281,15 +281,16 @@ export const modifyMapLineBarDataHandler = (mapLineBarData, seriesStyle) => {
     return {}
   }
 
-  const lineDataLen = mapLineBarData.yAxis && mapLineBarData.yAxis.line && mapLineBarData.yAxis.line.length || 0
-  const barDataLen = mapLineBarData.yAxis && mapLineBarData.yAxis.bar && mapLineBarData.yAxis.bar.length || 0
-  const mapLineDataList = [], mapBarDataList = []
+  const lineDataLen = (mapLineBarData.yAxis && mapLineBarData.yAxis.line && mapLineBarData.yAxis.line.length) || 0
+  const barDataLen = (mapLineBarData.yAxis && mapLineBarData.yAxis.bar && mapLineBarData.yAxis.bar.length) || 0
+  let mapLineDataList = []
+  let mapBarDataList = []
 
   if (lineDataLen) {
     mapLineDataList = mapLineBarData.yAxis.line.map((item, index) => {
       const itemStyle = judgeDataTypeHandler(seriesStyle, 'object') ? seriesStyle : judgeDataTypeHandler(seriesStyle, 'array') && seriesStyle[index + barDataLen] ? seriesStyle[index + barDataLen] : {}
       return {
-        name: mapLineBarData.legend && mapLineBarData.legend[index + barDataLen] || '',
+        name: (mapLineBarData.legend && mapLineBarData.legend[index + barDataLen]) || '',
         data: item,
         type: 'line',
         ...itemStyle
@@ -301,7 +302,7 @@ export const modifyMapLineBarDataHandler = (mapLineBarData, seriesStyle) => {
     mapBarDataList = mapLineBarData.yAxis.bar.map((item, index) => {
       const itemStyle = judgeDataTypeHandler(seriesStyle, 'object') ? seriesStyle : judgeDataTypeHandler(seriesStyle, 'array') && seriesStyle[index] ? seriesStyle[index] : {}
       return {
-        name: mapLineBarData.legend && mapLineBarData.legend[index] || '',
+        name: (mapLineBarData.legend && mapLineBarData.legend[index]) || '',
         data: item,
         type: 'bar',
         ...itemStyle
